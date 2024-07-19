@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "mt-4"
   );
   let currentPage = 1;
-  const pageSize = 5;
+  const pageSize = 6;
   let currentUrl = "";
   let showImages = true;
 
