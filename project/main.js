@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const handleCountryNewsClick = (event) => {
         currentPage = 1; // Reset current page for new fetch
         const countryCode = event.target.dataset.countryCode;
-        const url = `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
+        const url = `https://newsapi.org/v2/top-headlines?country=${countryCode}&apiKey=${apiKey}`;
         showImages = false;
         fetchNews(url, `${countryCode.toUpperCase()} News`);
     };
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     latestNewsLink.addEventListener("click", (e) => {
         e.preventDefault(); // Prevent default link behavior
         currentPage = 1; // Reset current page for new fetch
-        const url = `https://newsapi.org/v2/top-headlines?sources=bbc-news&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
+        const url = `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=${apiKey}`;
         showImages = true;
         fetchNews(url, "Latest News (BBC)");
     });
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchNews(url, headline.textContent, true);
     });
 
-    // Initial fetch for Bitcoin News on page load
+    // Initial fetch for Tech Crunch News on page load
     const url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
     fetchNews(url, "Top Headlines");
 });
