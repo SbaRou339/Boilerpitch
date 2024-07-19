@@ -76,10 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         "shadow-sm"
                     );
 
+                    const publishedAt = moment(article.publishedAt).fromNow();
                     const articleContent = `
                         <h3 class="text-lg font-semibold"><a href="${article.url}" target="_blank" class="text-blue-500 hover:underline">${article.title}</a></h3>
                         <p class="text-gray-700">${article.description || ""}</p>
                         <p class="text-gray-500 text-sm">By ${article.author || "Unknown author"}</p>
+                        <p class="text-gray-400 text-xs">Published ${publishedAt}</p>
                         ${showImages ? `<img src="${article.urlToImage || ""}" alt="Article Image" class="mt-2 w-full h-auto rounded" />` : ""}
                     `;
 
@@ -110,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const handleCountryNewsClick = (event) => {
         currentPage = 1; // Reset current page for new fetch
         const countryCode = event.target.dataset.countryCode;
-        const url = `https://newsapi.org/v2/top-headlines?country=${countryCode}&apiKey=${apiKey}`;
+        const url = `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
         showImages = false;
         fetchNews(url, `${countryCode.toUpperCase()} News`);
     };
@@ -134,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     latestNewsLink.addEventListener("click", (e) => {
         e.preventDefault(); // Prevent default link behavior
         currentPage = 1; // Reset current page for new fetch
-        const url = `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=${apiKey}`;
+        const url = `https://newsapi.org/v2/top-headlines?sources=bbc-news&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
         showImages = true;
         fetchNews(url, "Latest News (BBC)");
     });
@@ -146,6 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Initial fetch for Bitcoin News on page load
-    const url = `https://newsapi.org/v2/everything?q=bitcoin&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
-    fetchNews(url, "Bitcoin News");
+    const url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
+    fetchNews(url, "Top Headlines");
 });
