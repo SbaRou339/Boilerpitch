@@ -148,6 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Initial fetch for Tech Crunch News on page load
-    const url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
+    const url = `https://newsapi.org/v2/everything?q=bitcoin&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
     fetchNews(url, "Top Headlines");
 });
