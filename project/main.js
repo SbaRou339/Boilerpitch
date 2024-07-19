@@ -1,5 +1,4 @@
-import './style.css';
-
+// project\main.js
 document.addEventListener('DOMContentLoaded', () => {
   const apiKey = 'ddcaac8f1ddf45b28293a2b14d8ff03f';
   const query = 'bitcoin';
