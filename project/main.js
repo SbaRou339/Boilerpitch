@@ -20,20 +20,39 @@ document.addEventListener("DOMContentLoaded", () => {
     let showImages = true;
 
     const countries = [
-        "ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu",
-        "cz", "de", "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in",
-        "it", "jp", "kr", "lt", "lv", "ma", "mx", "my", "ng", "nl", "no", "nz",
-        "ph", "pl", "pt", "ro", "rs", "ru", "sa", "se", "sg", "si", "sk", "th",
-        "tr", "tw", "ua", "us", "ve", "za"
+        { code: "ae", name: "UAE" }, { code: "ar", name: "Argentina" }, { code: "at", name: "Austria" }, 
+        { code: "au", name: "Australia" }, { code: "be", name: "Belgium" }, { code: "bg", name: "Bulgaria" }, 
+        { code: "br", name: "Brazil" }, { code: "ca", name: "Canada" }, { code: "ch", name: "Switzerland" }, 
+        { code: "cn", name: "China" }, { code: "co", name: "Colombia" }, { code: "cu", name: "Cuba" }, 
+        { code: "cz", name: "Czech Republic" }, { code: "de", name: "Germany" }, { code: "eg", name: "Egypt" }, 
+        { code: "fr", name: "France" }, { code: "gb", name: "UK" }, { code: "gr", name: "Greece" }, 
+        { code: "hk", name: "Hong Kong" }, { code: "hu", name: "Hungary" }, { code: "id", name: "Indonesia" }, 
+        { code: "ie", name: "Ireland" }, { code: "il", name: "Israel" }, { code: "in", name: "India" }, 
+        { code: "it", name: "Italy" }, { code: "jp", name: "Japan" }, { code: "kr", name: "South Korea" }, 
+        { code: "lt", name: "Lithuania" }, { code: "lv", name: "Latvia" }, { code: "ma", name: "Morocco" }, 
+        { code: "mx", name: "Mexico" }, { code: "my", name: "Malaysia" }, { code: "ng", name: "Nigeria" }, 
+        { code: "nl", name: "Netherlands" }, { code: "no", name: "Norway" }, { code: "nz", name: "New Zealand" }, 
+        { code: "ph", name: "Philippines" }, { code: "pl", name: "Poland" }, { code: "pt", name: "Portugal" }, 
+        { code: "ro", name: "Romania" }, { code: "rs", name: "Serbia" }, { code: "ru", name: "Russia" }, 
+        { code: "sa", name: "Saudi Arabia" }, { code: "se", name: "Sweden" }, { code: "sg", name: "Singapore" }, 
+        { code: "si", name: "Slovenia" }, { code: "sk", name: "Slovakia" }, { code: "th", name: "Thailand" }, 
+        { code: "tr", name: "Turkey" }, { code: "tw", name: "Taiwan" }, { code: "ua", name: "Ukraine" }, 
+        { code: "us", name: "USA" }, { code: "ve", name: "Venezuela" }, { code: "za", name: "South Africa" }
     ];
 
-    /**
-     * Fetches news articles from the News API and displays them on the page.
-     *
-     * @param {string} url - The URL of the News API endpoint.
-     * @param {string} title - The title of the news section.
-     * @param {boolean} [append=false] - Whether to append the fetched news or replace the existing news.
-     */
+    const createCountryButtons = () => {
+        const countryButtonsContainer = document.getElementById("country-buttons");
+        countries.forEach((country) => {
+            const button = document.createElement("button");
+            button.id = `${country.code}-news-button`;
+            button.dataset.countryCode = country.code;
+            button.textContent = `${country.name} News`;
+            button.classList.add("p-2", "bg-blue-500", "text-white", "rounded", "shadow", "m-2");
+            button.addEventListener("click", handleCountryNewsClick);
+            countryButtonsContainer.appendChild(button);
+        });
+    };
+
     const fetchNews = (url, title, append = false) => {
         currentUrl = url;
         fetch(url)
@@ -44,13 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then((data) => {
-                // Check if there are any articles
                 if (!data.articles || data.articles.length === 0) {
                     newsList.innerHTML = `<p>No news articles found.</p>`;
                     return;
                 }
 
-                // Clear previous news only if not appending
                 if (!append) {
                     newsList.innerHTML = "";
                     headline.textContent = title;
@@ -64,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     "gap-4"
                 );
 
-                // Loop through each article and create a list item for it
                 data.articles.forEach((article) => {
                     const listItem = document.createElement("li");
                     listItem.classList.add(
@@ -89,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     container.appendChild(listItem);
                 });
 
-                // Append or replace the news list on the page
                 if (append) {
                     newsList.appendChild(container);
                 } else {
@@ -97,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     newsList.appendChild(container);
                 }
 
-                // Show or hide the "Show More" button
                 if (data.articles.length === pageSize) {
                     newsList.appendChild(showMoreButton);
                 } else {
@@ -110,32 +124,24 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const handleCountryNewsClick = (event) => {
-        currentPage = 1; // Reset current page for new fetch
+        currentPage = 1;
         const countryCode = event.target.dataset.countryCode;
         const url = `https://newsapi.org/v2/top-headlines?country=${countryCode}&apiKey=${apiKey}`;
         showImages = false;
         fetchNews(url, `${countryCode.toUpperCase()} News`);
     };
 
-    countries.forEach((country) => {
-        const button = document.getElementById(`${country}-news-button`);
-        if (button) {
-            button.dataset.countryCode = country;
-            button.addEventListener("click", handleCountryNewsClick);
-        }
-    });
-
     bitcoinLink.addEventListener("click", (e) => {
-        e.preventDefault(); // Prevent default link behavior
-        currentPage = 1; // Reset current page for new fetch
+        e.preventDefault();
+        currentPage = 1;
         const url = `https://newsapi.org/v2/everything?q=bitcoin&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
         showImages = true;
         fetchNews(url, "Bitcoin News");
     });
 
     latestNewsLink.addEventListener("click", (e) => {
-        e.preventDefault(); // Prevent default link behavior
-        currentPage = 1; // Reset current page for new fetch
+        e.preventDefault();
+        currentPage = 1;
         const url = `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=${apiKey}`;
         showImages = true;
         fetchNews(url, "Latest News (BBC)");
@@ -147,7 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchNews(url, headline.textContent, true);
     });
 
-    // Initial fetch for Tech Crunch News on page load
-    const url = `https://newsapi.org/v2/everything?q=bitcoin&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
-    fetchNews(url, "Top Headlines");
+    createCountryButtons();
+
+    const initialUrl = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
+    fetchNews(initialUrl, "Tech News");
 });
