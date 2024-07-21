@@ -11,23 +11,30 @@
 <body class="bg-gray-100 text-gray-800">
     <header class="bg-gray-800 text-white p-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold"><button href="#headline">Wordlet</button></h1>
+            <h1 class="text-2xl font-bold"><button class="border">Word</button><button class="text-black bg-gray-100 border font-semibold">let</button></h1>
             <nav>
                 <ul class="flex space-x-4">
                     <li><a href="#home" id="latest-news-link" class="hover:text-gray-400">Latest News</a></li>
                     <li><a href="#bitcoin" id="bitcoin-link" class="hover:text-gray-400">Bitcoin News</a></li>
-                    <li><a href="#contact" class="hover:text-gray-400">Ethereum News</a></li>
+                    <li><a href="#contact" id="tech-news-link" class="hover:text-gray-400">Tech News</a></li>
                 </ul>
             </nav>
         </div>
     </header>
-    <div class="container mx-auto p-4" id="country-buttons"></div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-xl font-semibold">News by Country</h1>
+        <div id="country-buttons" class="flex flex-wrap"></div>
+        <div id="pagination-buttons" class="flex justify-center mt-4">
+            <button id="prev-button" class="p-2 bg-blue-500 text-white rounded shadow mx-2">Previous</button>
+            <button id="next-button" class="p-2 bg-blue-500 text-white rounded shadow mx-2">Next</button>
+        </div>
+    </div>
     <main>
         <div class="container mx-auto p-4">
             <h2 id="headline" class="text-xl font-semibold mb-4"></h2>
             <ul id="news-list" class="space-y-2"></ul>
         </div>
     </main>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>

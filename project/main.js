@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const headline = document.getElementById("headline");
     const bitcoinLink = document.getElementById("bitcoin-link");
     const latestNewsLink = document.getElementById("latest-news-link");
+    const techNewsLink = document.getElementById("tech-news-link");
     const showMoreButton = document.createElement("button");
     showMoreButton.textContent = "Show More";
     showMoreButton.classList.add(
@@ -15,9 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
         "mt-4"
     );
     let currentPage = 1;
-    const pageSize = 6;
+    let currentCountryPage = 1;
+    const pageSize = 30;
     let currentUrl = "";
     let showImages = true;
+    const countriesPerPage = 9;
 
     const countries = [
         { code: "ae", name: "UAE" }, { code: "ar", name: "Argentina" }, { code: "at", name: "Austria" }, 
@@ -37,12 +40,18 @@ document.addEventListener("DOMContentLoaded", () => {
         { code: "sa", name: "Saudi Arabia" }, { code: "se", name: "Sweden" }, { code: "sg", name: "Singapore" }, 
         { code: "si", name: "Slovenia" }, { code: "sk", name: "Slovakia" }, { code: "th", name: "Thailand" }, 
         { code: "tr", name: "Turkey" }, { code: "tw", name: "Taiwan" }, { code: "ua", name: "Ukraine" }, 
-        { code: "us", name: "USA" }, { code: "ve", name: "Venezuela" }, { code: "za", name: "South Africa" }
+        { code: "us", name: "USA" }, { code: "ve", name: "Venezuela" }
     ];
 
     const createCountryButtons = () => {
         const countryButtonsContainer = document.getElementById("country-buttons");
-        countries.forEach((country) => {
+        countryButtonsContainer.innerHTML = "";
+
+        const startIndex = (currentCountryPage - 1) * countriesPerPage;
+        const endIndex = startIndex + countriesPerPage;
+        const currentCountries = countries.slice(startIndex, endIndex);
+
+        currentCountries.forEach((country) => {
             const button = document.createElement("button");
             button.id = `${country.code}-news-button`;
             button.dataset.countryCode = country.code;
@@ -51,6 +60,16 @@ document.addEventListener("DOMContentLoaded", () => {
             button.addEventListener("click", handleCountryNewsClick);
             countryButtonsContainer.appendChild(button);
         });
+
+        updatePaginationButtons();
+    };
+
+    const updatePaginationButtons = () => {
+        const prevButton = document.getElementById("prev-button");
+        const nextButton = document.getElementById("next-button");
+
+        prevButton.disabled = currentCountryPage === 1;
+        nextButton.disabled = currentCountryPage === Math.ceil(countries.length / countriesPerPage);
     };
 
     const fetchNews = (url, title, append = false) => {
@@ -97,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <h3 class="text-lg font-semibold"><a href="${article.url}" target="_blank" class="text-blue-500 hover:underline">${article.title}</a></h3>
                         <p class="text-gray-700">${article.description || ""}</p>
                         <p class="text-gray-500 text-sm">By ${article.author || "Unknown author"}</p>
-                        <p class="text-gray-400 text-xs">Published ${publishedAt}</p>
+                        <p class="text-gray-400 text-sm">${publishedAt}</p>
                         ${showImages ? `<img src="${article.urlToImage || ""}" alt="Article Image" class="mt-2 w-full h-auto rounded" />` : ""}
                     `;
 
@@ -147,14 +166,36 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchNews(url, "Latest News (BBC)");
     });
 
+    techNewsLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        currentPage = 1;
+        const url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
+        showImages = true;
+        fetchNews(url, "Tech News");
+    });
+
     showMoreButton.addEventListener("click", () => {
         currentPage++;
         const url = `${currentUrl}&page=${currentPage}`;
         fetchNews(url, headline.textContent, true);
     });
 
+    document.getElementById("prev-button").addEventListener("click", () => {
+        if (currentCountryPage > 1) {
+            currentCountryPage--;
+            createCountryButtons();
+        }
+    });
+
+    document.getElementById("next-button").addEventListener("click", () => {
+        if (currentCountryPage < Math.ceil(countries.length / countriesPerPage)) {
+            currentCountryPage++;
+            createCountryButtons();
+        }
+    });
+
     createCountryButtons();
 
-    const initialUrl = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&pageSize=${pageSize}&page=${currentPage}&apiKey=${apiKey}`;
-    fetchNews(initialUrl, "Tech News");
+    const url = `https://newsapi.org/v2/top-headlines?country=za&apiKey=${apiKey}`;
+    fetchNews(url, "SA Top Headlines");
 });
